@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="warn" skipJansi="false">
+    <Appenders>
+        <!-- Sexy console output for my dev machine -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%highlight{[%d{ABSOLUTE}][%t][%-5level][%logger{1.}] %msg%n}"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <!-- Log only necessary information from libraries -->
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+
+        <!-- Log all messages from my packages -->
+        <Logger name="moe.xetanai.rubix" level="trace" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+    </Loggers>
+</Configuration>
