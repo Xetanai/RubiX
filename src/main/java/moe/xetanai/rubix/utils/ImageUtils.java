@@ -1,10 +1,7 @@
 package moe.xetanai.rubix.utils;
 
-import moe.xetanai.rubix.modules.Welcome;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.css.Rect;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

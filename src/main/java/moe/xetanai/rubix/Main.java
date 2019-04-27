@@ -1,11 +1,11 @@
 package moe.xetanai.rubix;
 
 import moe.xetanai.rubix.database.Database;
-import moe.xetanai.rubix.modules.Welcome;
+import moe.xetanai.rubix.modules.CommandModule;
+import moe.xetanai.rubix.modules.WelcomeModule;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Game;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -42,8 +42,10 @@ public class Main {
 			JDABuilder apibuilder = new JDABuilder(AccountType.BOT)
 					.setToken(botCfg.getString("token"))
 					.setAudioEnabled(false)
-					.addEventListener(new Welcome());
+					.addEventListener(new WelcomeModule())
+					.addEventListener(new CommandModule());
 
+			CommandModule.registerCommands();
 			this.api = apibuilder.build();
 		} catch (IOException | JSONException err) {
 			logger.fatal("Failed to load and parse configuration", err);

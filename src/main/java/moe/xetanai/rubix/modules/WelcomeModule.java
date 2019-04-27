@@ -1,7 +1,7 @@
 package moe.xetanai.rubix.modules;
 
 import moe.xetanai.rubix.utils.ImageUtils;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-public class Welcome extends ListenerAdapter {
-	private static final Logger logger = LogManager.getLogger(Welcome.class.getName());
+public class WelcomeModule extends ListenerAdapter {
+	private static final Logger logger = LogManager.getLogger(WelcomeModule.class.getName());
 	private static Font FONT;
 
 	// Formatting consts
@@ -58,7 +58,7 @@ public class Welcome extends ListenerAdapter {
 			IMG_H-PADDING-HEADER.getHeight()
 	);
 
-	public Welcome() {
+	public WelcomeModule() {
 		try {
 			InputStream is = getClass().getClassLoader()
 					.getResourceAsStream(FONT_NAME);
@@ -70,18 +70,17 @@ public class Welcome extends ListenerAdapter {
 	}
 
 	@Override
-	public void onMessageReceived(MessageReceivedEvent event) {
-		// TODO: Change to member join event. onMessage is for debug purposes
+	public void onGuildMemberJoin(GuildMemberJoinEvent event) {
 		// TODO: Check if the guild has enabled welcoming
-		// This module ignores bots.
-		if(event.getAuthor().isBot()) {return;}
+		// This module ignores bots. // TODO: Consider allowing configuring this
+		if(event.getUser().isBot()) {return;}
 
 		logger.traceEntry();
 
 		try {
 			// Prepare assets
-			String avatarURL = event.getAuthor().getEffectiveAvatarUrl();
-			String userTag = event.getAuthor().getAsTag();
+			String avatarURL = event.getUser().getEffectiveAvatarUrl();
+			String userTag = event.getUser().getAsTag();
 //			String userTag = event.getMessage().getContentDisplay();
 
 			// Create the image
@@ -89,11 +88,7 @@ public class Welcome extends ListenerAdapter {
 			Graphics2D g = img.createGraphics();
 			ImageUtils.setDefaultHints(g);
 			g.setFont(FONT);
-			ImageUtils ge = new ImageUtils(g, "Welcome ("+ userTag +")");
-
-			if(event.getMessage().getContentRaw().contains("debug")) {
-				ge.setDebug(true);
-			}
+			ImageUtils ge = new ImageUtils(g, "WelcomeModule ("+ userTag +")");
 
 			// Background
 			ge.fill(BACKGROUND, BACKGROUND_COLOR);
@@ -106,7 +101,8 @@ public class Welcome extends ListenerAdapter {
 			ge.dispose();
 			g.dispose();
 
-			event.getChannel().sendFile(ImageUtils.getInputStream(img), "Welcome.png").queue();
+			// TODO: Configure which channel to send to
+			event.getGuild().getDefaultChannel().sendFile(ImageUtils.getInputStream(img), "Welcome_"+userTag+".png").queue();
 			logger.traceExit();
 		} catch (IOException err) {
 			err.printStackTrace();
