@@ -1,6 +1,7 @@
 package moe.xetanai.rubix.database;
 
 import com.zaxxer.hikari.HikariDataSource;
+import moe.xetanai.rubix.database.tables.GuildSettingsTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -12,7 +13,9 @@ import java.sql.SQLException;
 
 public class Database {
 	private static final Logger logger = LogManager.getLogger(Database.class.getName());
-	private final HikariDataSource ds;
+	private HikariDataSource ds;
+
+	public final GuildSettingsTable guildSettings;
 
 	public Database(JSONObject config) {
 		logger.traceEntry();
@@ -21,6 +24,8 @@ public class Database {
 		ds.setUsername(config.getString("username"));
 		ds.setPassword(config.getString("password"));
 		ds.setLeakDetectionThreshold(30000);
+
+		guildSettings = new GuildSettingsTable(this);
 	}
 
 	public Connection getConnection() {

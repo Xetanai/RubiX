@@ -1,5 +1,6 @@
 package moe.xetanai.rubix.modules;
 
+import moe.xetanai.rubix.Main;
 import moe.xetanai.rubix.utils.ImageUtils;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -18,6 +19,8 @@ import java.net.URL;
 public class WelcomeModule extends ListenerAdapter {
 	private static final Logger logger = LogManager.getLogger(WelcomeModule.class.getName());
 	private static Font FONT;
+
+	private final Main bot;
 
 	// Formatting consts
 	private static final String FONT_NAME = "SourceCodePro-Regular.ttf";
@@ -58,7 +61,8 @@ public class WelcomeModule extends ListenerAdapter {
 			IMG_H-PADDING-HEADER.getHeight()
 	);
 
-	public WelcomeModule() {
+	public WelcomeModule(Main bot) {
+		this.bot = bot;
 		try {
 			InputStream is = getClass().getClassLoader()
 					.getResourceAsStream(FONT_NAME);

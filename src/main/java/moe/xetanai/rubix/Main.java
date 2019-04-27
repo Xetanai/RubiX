@@ -42,8 +42,8 @@ public class Main {
 			JDABuilder apibuilder = new JDABuilder(AccountType.BOT)
 					.setToken(botCfg.getString("token"))
 					.setAudioEnabled(false)
-					.addEventListener(new WelcomeModule())
-					.addEventListener(new CommandModule());
+					.addEventListener(new WelcomeModule(this))
+					.addEventListener(new CommandModule(this));
 
 			CommandModule.registerCommands();
 			this.api = apibuilder.build();
@@ -66,6 +66,10 @@ public class Main {
 		stream.close();
 
 		return configContents.toString();
+	}
+
+	public Database getDatabase() {
+		return this.database;
 	}
 
 	public static void main(String[] args) {

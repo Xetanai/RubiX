@@ -1,22 +1,20 @@
 package moe.xetanai.rubix.entities;
 
+import moe.xetanai.rubix.database.Database;
+import moe.xetanai.rubix.database.tables.GuildSettingsTable;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+
+import java.sql.SQLException;
 
 public class CommandContext {
 	private MessageReceivedEvent event;
-	private boolean matchedPrefix = false;
+	private GuildSettingsTable.GuildSettings guildSettings;
 	private String keyword;
 
-	public CommandContext(MessageReceivedEvent event) {
+	public CommandContext(MessageReceivedEvent event, GuildSettingsTable.GuildSettings guildSettings, String keyword) {
 		this.event = event;
-
-		String message = event.getMessage().getContentRaw();
-		// TODO: Custom prefixes
-		if(!message.startsWith("!")) {return;}
-		this.matchedPrefix = true;
-
-		// TODO: Substring by prefix length
-		this.keyword = message.split(" ")[0].substring(1);
+		this.guildSettings = guildSettings;
+		this.keyword = keyword;
 	}
 
 	// Setters
@@ -25,10 +23,6 @@ public class CommandContext {
 
 	public MessageReceivedEvent getEvent() {
 		return this.event;
-	}
-
-	public boolean matchedPrefix() {
-		return this.matchedPrefix;
 	}
 
 	public String getKeyword() {
