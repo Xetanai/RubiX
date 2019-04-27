@@ -21,10 +21,16 @@ public class ImageUtils {
 	private static final Logger logger = LogManager.getLogger(ImageUtils.class.getName());
 
 	private Graphics2D g;
+	private String name;
 	private boolean debug;
 
 	public ImageUtils(Graphics2D g) {
+		this(g, "NAME NOT SET. HAVE FUN DEBUGGING, ASSHOLE.");
+	}
+
+	public ImageUtils(Graphics2D g, String name) {
 		this.g = g;
+		this.name = name;
 	}
 
 	// GETTERS
@@ -47,6 +53,7 @@ public class ImageUtils {
 
 	public void dispose() {
 		g.dispose();
+		logger.debug("ImageUtil {} disposed of", this.name);
 	}
 
 	// PUBLIC DRAWING METHODS
@@ -162,7 +169,8 @@ public class ImageUtils {
 		this.g.draw(bounds);
 		this.g.setColor(old);
 
-		logger.trace("Bounds: X={}, Y={}, W={}, H={}",
+		logger.trace("{} | Bounds: X={}, Y={}, W={}, H={}",
+				this.name,
 				bounds.getX(),
 				bounds.getY(),
 				bounds.getWidth(),

@@ -89,7 +89,7 @@ public class Welcome extends ListenerAdapter {
 			Graphics2D g = img.createGraphics();
 			ImageUtils.setDefaultHints(g);
 			g.setFont(FONT);
-			ImageUtils ge = new ImageUtils(g);
+			ImageUtils ge = new ImageUtils(g, "Welcome ("+ userTag +")");
 
 			if(event.getMessage().getContentRaw().contains("debug")) {
 				ge.setDebug(true);
