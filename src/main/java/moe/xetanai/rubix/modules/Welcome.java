@@ -107,7 +107,7 @@ public class Welcome extends ListenerAdapter {
 			g.dispose();
 
 			event.getChannel().sendFile(ImageUtils.getInputStream(img), "Welcome.png").queue();
-			// Place their avatar
+			logger.traceExit();
 		} catch (IOException err) {
 			err.printStackTrace();
 		}
