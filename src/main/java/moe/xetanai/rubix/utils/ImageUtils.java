@@ -105,12 +105,13 @@ public class ImageUtils {
 
 	public ImageUtils drawText(Rectangle2D bounds, String text, Color color) {
 		scaleFontToBounds(text, bounds);
+		int offset = this.g.getFontMetrics().getMaxDescent();
 
 		this.g.setColor(color);
 		this.g.drawString(
 				text,
 				(int) bounds.getX(),
-				(int) (bounds.getY()+bounds.getHeight())
+				(int) (bounds.getY()+bounds.getHeight())-offset
 		);
 		return debugDrawBounds(bounds);
 	}
