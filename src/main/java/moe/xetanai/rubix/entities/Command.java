@@ -27,6 +27,10 @@ public class Command {
 
 	// Getters
 
+	protected Logger getLogger() {
+		return this.logger;
+	}
+
 	public String[] getKeywords() {
 		return keywords;
 	}

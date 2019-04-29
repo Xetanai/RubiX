@@ -1,20 +1,21 @@
 package moe.xetanai.rubix.entities;
 
-import moe.xetanai.rubix.database.Database;
 import moe.xetanai.rubix.database.tables.GuildSettingsTable;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.sql.SQLException;
 
 public class CommandContext {
 	private MessageReceivedEvent event;
 	private GuildSettingsTable.GuildSettings guildSettings;
-	private String keyword;
+	private String[] args;
 
-	public CommandContext(MessageReceivedEvent event, GuildSettingsTable.GuildSettings guildSettings, String keyword) {
+	public CommandContext(MessageReceivedEvent event, GuildSettingsTable.GuildSettings guildSettings) {
 		this.event = event;
 		this.guildSettings = guildSettings;
-		this.keyword = keyword;
+		this.args = event.getMessage().getContentRaw().split(" ");
+
+		// Strip prefix from the keyword argument
+		this.args[0] = this.args[0].substring(guildSettings.getPrefix().length());
 	}
 
 	// Setters
@@ -26,7 +27,15 @@ public class CommandContext {
 	}
 
 	public String getKeyword() {
-		return this.keyword;
+		return this.args[0];
+	}
+
+	public String[] getArgs() {
+		return this.args;
+	}
+
+	public GuildSettingsTable.GuildSettings getGuildSettings() {
+		return guildSettings;
 	}
 
 	// Helper methods

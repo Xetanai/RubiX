@@ -22,8 +22,8 @@ import java.util.stream.Stream;
 public class Main {
 	private static final Logger logger = LogManager.getLogger(Main.class.getName());
 
-	Database database;
-	JDA api;
+	private Database database;
+	private static JDA api;
 
 	public Main() {
 		logger.info("Starting Rubix v"+ RubixInfo.VERSION);
@@ -46,7 +46,7 @@ public class Main {
 					.addEventListener(new CommandModule(this));
 
 			CommandModule.registerCommands();
-			this.api = apibuilder.build();
+			api = apibuilder.build();
 		} catch (IOException | JSONException err) {
 			logger.fatal("Failed to load and parse configuration", err);
 			System.exit(1);
@@ -70,6 +70,10 @@ public class Main {
 
 	public Database getDatabase() {
 		return this.database;
+	}
+
+	public static JDA getApi() {
+		return api;
 	}
 
 	public static void main(String[] args) {
