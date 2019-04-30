@@ -95,10 +95,8 @@ public class CommandModule extends ListenerAdapter {
 
 	public static Command getCommandByKeyword(String keyword) {
 		for(Command c : COMMANDS) {
-			for(String s : c.getKeywords()) {
-				if(s.equalsIgnoreCase(keyword)) {
-					return c;
-				}
+			if(c.matchesKeyword(keyword)) {
+				return c;
 			}
 		}
 

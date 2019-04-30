@@ -3,7 +3,6 @@ package moe.xetanai.rubix.entities.commands;
 import moe.xetanai.rubix.RubixInfo;
 import moe.xetanai.rubix.entities.Command;
 import moe.xetanai.rubix.entities.CommandContext;
-import moe.xetanai.rubix.entities.CommandException;
 import net.dv8tion.jda.core.EmbedBuilder;
 
 import java.awt.*;

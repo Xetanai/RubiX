@@ -57,7 +57,7 @@ public class ImageUtils {
 
 
 	// Quick shape drawing
-	public ImageUtils draw(Shape shape, Color color, Stroke stroke) {
+	public ImageUtils outline(Shape shape, Color color, Stroke stroke) {
 		this.g.setColor(color);
 		this.g.setStroke(stroke);
 

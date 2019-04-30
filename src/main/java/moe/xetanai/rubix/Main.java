@@ -25,7 +25,7 @@ public class Main {
 	private Database database;
 	private static JDA api;
 
-	public Main() {
+	private Main() {
 		logger.info("Starting Rubix v"+ RubixInfo.VERSION);
 
 		try {
@@ -42,7 +42,7 @@ public class Main {
 			JDABuilder apibuilder = new JDABuilder(AccountType.BOT)
 					.setToken(botCfg.getString("token"))
 					.setAudioEnabled(false)
-					.addEventListener(new WelcomeModule(this))
+					.addEventListener(new WelcomeModule())
 					.addEventListener(new CommandModule(this));
 
 			CommandModule.registerCommands();

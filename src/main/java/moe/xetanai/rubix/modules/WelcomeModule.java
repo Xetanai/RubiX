@@ -1,7 +1,7 @@
 package moe.xetanai.rubix.modules;
 
-import moe.xetanai.rubix.Main;
 import moe.xetanai.rubix.utils.ImageUtils;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.logging.log4j.LogManager;
@@ -19,8 +19,6 @@ import java.net.URL;
 public class WelcomeModule extends ListenerAdapter {
 	private static final Logger logger = LogManager.getLogger(WelcomeModule.class.getName());
 	private static Font FONT;
-
-	private final Main bot;
 
 	// Formatting consts
 	private static final String FONT_NAME = "SourceCodePro-Regular.ttf";
@@ -61,8 +59,7 @@ public class WelcomeModule extends ListenerAdapter {
 			IMG_H-PADDING-HEADER.getHeight()
 	);
 
-	public WelcomeModule(Main bot) {
-		this.bot = bot;
+	public WelcomeModule() {
 		try {
 			InputStream is = getClass().getClassLoader()
 					.getResourceAsStream(FONT_NAME);
@@ -106,7 +103,12 @@ public class WelcomeModule extends ListenerAdapter {
 			g.dispose();
 
 			// TODO: Configure which channel to send to
-			event.getGuild().getDefaultChannel().sendFile(ImageUtils.getInputStream(img), "Welcome_"+userTag+".png").queue();
+			TextChannel target = event.getGuild().getDefaultChannel();
+			if(target == null) {
+				// We aren't allowed to speak anywhere, so cease
+				return;
+			}
+			target.sendFile(ImageUtils.getInputStream(img), "Welcome_"+userTag+".png").queue();
 			logger.traceExit();
 		} catch (IOException err) {
 			err.printStackTrace();

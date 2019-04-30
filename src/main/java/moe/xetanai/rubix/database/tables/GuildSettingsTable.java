@@ -1,5 +1,6 @@
 package moe.xetanai.rubix.database.tables;
 
+import moe.xetanai.rubix.database.Column;
 import moe.xetanai.rubix.database.Database;
 import moe.xetanai.rubix.database.Table;
 
@@ -9,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class GuildSettingsTable extends Table {
-	private Column<Long> DISCORD_ID = new Column<Long>("discordid", -1L);
+	private Column<Long> DISCORD_ID = new Column<>("discordid", -1L);
 	private Column<String> PREFIX = new Column<>("prefix","!");
 
 	public GuildSettingsTable(Database db) {
@@ -47,7 +48,7 @@ public class GuildSettingsTable extends Table {
 		private final long id;
 		private final String prefix;
 
-		public GuildSettings() {
+		GuildSettings() {
 			this.id = DISCORD_ID.getDefaultValue();
 			this.prefix = PREFIX.getDefaultValue();
 		}

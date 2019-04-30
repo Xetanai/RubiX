@@ -1,6 +1,4 @@
-package moe.xetanai.rubix.database.tables;
-
-import moe.xetanai.rubix.entities.Command;
+package moe.xetanai.rubix.database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +7,7 @@ public class Column<T> {
 	private String name;
 	private T defaultValue;
 
-	public Column(String name, T defaultValue) {
+	Column(String name, T defaultValue) {
 		this.name = name;
 		this.defaultValue = defaultValue;
 	}

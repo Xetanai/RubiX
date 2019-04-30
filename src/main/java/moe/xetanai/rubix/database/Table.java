@@ -7,7 +7,7 @@ public class Table {
 		this.db = db;
 	}
 
-	public Database getDb() {
+	Database getDb() {
 		return db;
 	}
 }

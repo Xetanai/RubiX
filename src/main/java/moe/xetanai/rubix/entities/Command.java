@@ -1,12 +1,8 @@
 package moe.xetanai.rubix.entities;
 
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.utils.PermissionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.awt.*;
-import java.util.Arrays;
 
 public class Command {
 	private final Logger logger;
