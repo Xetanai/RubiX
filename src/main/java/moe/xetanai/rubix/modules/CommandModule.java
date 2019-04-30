@@ -4,15 +4,14 @@ import moe.xetanai.rubix.Main;
 import moe.xetanai.rubix.database.tables.GuildSettingsTable;
 import moe.xetanai.rubix.entities.Command;
 import moe.xetanai.rubix.entities.CommandContext;
-import moe.xetanai.rubix.entities.CommandException;
 import moe.xetanai.rubix.entities.commands.About;
 import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +24,11 @@ public class CommandModule extends ListenerAdapter {
 
 	public CommandModule(Main bot) {
 		this.bot = bot;
+		registerCommands();
 	}
 
 	@Override
-	public void onMessageReceived(MessageReceivedEvent event) {
+	public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 		logger.traceEntry();
 		// Non negotiable, this ignores bots
 		if(event.getAuthor().isBot()) {return;}
@@ -93,7 +93,12 @@ public class CommandModule extends ListenerAdapter {
 		logger.traceExit();
 	}
 
-	public static Command getCommandByKeyword(String keyword) {
+	/**
+	 * Get the command a keyword is for. Only searches registered commands
+	 * @param keyword keyword to check
+	 * @return Command it matched, or null if none matched
+	 */
+	public static Command getCommandByKeyword(@Nonnull String keyword) {
 		for(Command c : COMMANDS) {
 			if(c.matchesKeyword(keyword)) {
 				return c;
@@ -103,6 +108,9 @@ public class CommandModule extends ListenerAdapter {
 		return null;
 	}
 
+	/**
+	 * Register all commands into the command list
+	 */
 	public static void registerCommands() {
 		COMMANDS.add(new About());
 	}

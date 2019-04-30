@@ -7,6 +7,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -71,7 +72,7 @@ public class WelcomeModule extends ListenerAdapter {
 	}
 
 	@Override
-	public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+	public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
 		// TODO: Check if the guild has enabled welcoming
 		// This module ignores bots. // TODO: Consider allowing configuring this
 		if(event.getUser().isBot()) {return;}

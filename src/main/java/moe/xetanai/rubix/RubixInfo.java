@@ -2,6 +2,8 @@ package moe.xetanai.rubix;
 
 import net.dv8tion.jda.core.entities.User;
 
+import javax.annotation.Nonnull;
+
 public class RubixInfo {
 	private static final int VERSION_MAJOR = 0;
 	private static final int VERSION_MINOR = 0;
@@ -28,6 +30,10 @@ public class RubixInfo {
 	private static String BOT_AVATAR = null;
 	private static User BOT_OWNER = null;
 
+	/**
+	 * @return the bot's current avatar
+	 */
+	@Nonnull
 	public static String getAvatar() {
 		if(BOT_AVATAR == null) {
 			BOT_AVATAR = Main.getApi().getSelfUser().getEffectiveAvatarUrl();
@@ -35,6 +41,10 @@ public class RubixInfo {
 		return BOT_AVATAR;
 	}
 
+	/**
+	 * @return the bot's owner. Should be Julia#0001, but discrim changes are a bitch, yaknow
+	 */
+	@Nonnull
 	public static User getOwner() {
 		if(BOT_OWNER == null) {
 			BOT_OWNER = Main.getApi().getUserById(BOT_OWNER_ID);

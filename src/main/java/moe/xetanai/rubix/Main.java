@@ -44,8 +44,6 @@ public class Main {
 					.setAudioEnabled(false)
 					.addEventListener(new WelcomeModule())
 					.addEventListener(new CommandModule(this));
-
-			CommandModule.registerCommands();
 			api = apibuilder.build();
 		} catch (IOException | JSONException err) {
 			logger.fatal("Failed to load and parse configuration", err);
@@ -58,6 +56,10 @@ public class Main {
 		logger.traceExit();
 	}
 
+	/**
+	 * @return config.json contents as a string
+	 * @throws IOException if there was an IO error while reading it
+	 */
 	private String getConfigFileContents() throws IOException {
 		// Open and parse the config file.
 		StringBuilder configContents = new StringBuilder();
@@ -68,14 +70,23 @@ public class Main {
 		return configContents.toString();
 	}
 
+	/**
+	 * @return Database
+	 */
 	public Database getDatabase() {
 		return this.database;
 	}
 
+	/**
+	 * @return JDA API root
+	 */
 	public static JDA getApi() {
 		return api;
 	}
 
+	/**
+	 * Lights, camera, action!
+	 */
 	public static void main(String[] args) {
 		new Main();
 	}
