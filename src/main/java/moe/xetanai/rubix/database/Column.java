@@ -17,7 +17,7 @@ public class Column<T> {
 	 * @param name The SQL Column name
 	 * @param defaultValue The value to expose NULL in the database as
 	 */
-	Column(@Nonnull String name, @Nonnull T defaultValue) {
+	public Column(@Nonnull String name, @Nonnull T defaultValue) {
 		this.name = name;
 		this.defaultValue = defaultValue;
 	}

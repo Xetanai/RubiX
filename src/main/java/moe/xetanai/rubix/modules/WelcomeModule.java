@@ -74,7 +74,7 @@ public class WelcomeModule extends ListenerAdapter {
 	@Override
 	public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
 		// TODO: Check if the guild has enabled welcoming
-		// This module ignores bots. // TODO: Consider allowing configuring this
+		// This module ignores bots.
 		if(event.getUser().isBot()) {return;}
 
 		logger.traceEntry();
