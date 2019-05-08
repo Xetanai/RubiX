@@ -5,6 +5,7 @@ import moe.xetanai.rubix.database.tables.GuildSettingsTable;
 import moe.xetanai.rubix.entities.Command;
 import moe.xetanai.rubix.entities.CommandContext;
 import moe.xetanai.rubix.entities.commands.About;
+import moe.xetanai.rubix.entities.commands.ActivityPie;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -113,5 +114,6 @@ public class CommandModule extends ListenerAdapter {
 	 */
 	public static void registerCommands() {
 		COMMANDS.add(new About());
+		COMMANDS.add(new ActivityPie());
 	}
 }
