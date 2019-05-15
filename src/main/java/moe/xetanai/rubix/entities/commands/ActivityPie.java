@@ -4,7 +4,10 @@ import moe.xetanai.rubix.entities.Command;
 import moe.xetanai.rubix.entities.CommandContext;
 import moe.xetanai.rubix.entities.CommandException;
 import moe.xetanai.rubix.utils.ImageUtils;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageHistory;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
@@ -20,83 +23,54 @@ import java.util.List;
 import java.util.Map;
 
 public class ActivityPie extends Command {
-	private static final String FONT_NAME = "SourceCodePro-Regular.ttf";
-	private static Font BASE_FONT;
-	private static double MINIMUM_PERCENTAGE = 0.01d;
+	private static String FONT_FILENAME = "SourceCodePro-Regular.ttf";
+	private static Font BASE_FONT = null;
+	private static double MINIMUM_PERCENTAGE = 0.05d;
 	private static Color[] COLORS = {
-			new Color(80,80,80,255),
 			new Color(0,147,255, 255),
 			new Color(253, 1, 0, 255),
 			new Color(1, 253, 32, 255),
 			new Color(253, 104, 1, 255),
 			new Color(253, 214, 0, 255)
 	};
-
-	private static Font FONT_SMALL = null;
-	private static Font FONT_REGULAR = null;
-	private static Font FONT_LARGE = null;
-	private static Font FONT_XL = null;
-	private static StandardChartTheme CHART_THEME = (StandardChartTheme) StandardChartTheme.createJFreeTheme();
+	private static StandardChartTheme CHART_THEME = null;
 
 	public ActivityPie() {
 		super(new String[]{"activitypie"});
 
-		try {
-			InputStream is = getClass().getClassLoader()
-					.getResourceAsStream(FONT_NAME);
-			if(is == null) throw new IOException("Font was null.");
-			BASE_FONT = Font.createFont(Font.TRUETYPE_FONT, is);
-
-			FONT_SMALL = BASE_FONT.deriveFont(12f);
-			FONT_REGULAR = BASE_FONT.deriveFont(18f);
-			FONT_LARGE = BASE_FONT.deriveFont(25f);
-			FONT_XL = BASE_FONT.deriveFont(32f);
-
-			CHART_THEME.setSmallFont(FONT_SMALL);
-			CHART_THEME.setRegularFont(FONT_REGULAR);
-			CHART_THEME.setLargeFont(FONT_LARGE.deriveFont(Font.BOLD));
-			CHART_THEME.setExtraLargeFont(FONT_XL.deriveFont(Font.BOLD));
-
-			CHART_THEME.setChartBackgroundPaint(new Color(0,0,0,0));
-			CHART_THEME.setPlotBackgroundPaint(new Color(0,0,0,0));
-			CHART_THEME.setPlotOutlinePaint(new Color(0,0,0,0));
-			CHART_THEME.setShadowVisible(false);
-		} catch (IOException | FontFormatException err) {
-			this.getLogger().error("Failed to prepare font");
-		}
+		loadFont();
+		createChartTheme();
 	}
 
 	@Override
 	public boolean isAllowedInDms() {
+		// Dummy, dms would just have 2 colors.
 		return false;
 	}
 
 	@Override
-	public void run(CommandContext ctx) throws CommandException{
+	public void run(CommandContext ctx) throws CommandException {
 		try {
 			TextChannel channel = ctx.getEvent().getTextChannel();
 			int amt = 100;
 
-			if (ctx.getArgs().length != 1) {
+			if(ctx.getArgs().length != 1) {
 				String amtArg = ctx.getArgs()[1];
 				try {
-					int tamt = Integer.parseInt(amtArg);
-
-					if (tamt > 0 && tamt <= 1000) {
-						amt = tamt;
-					} else {
-						ctx.reply("Amount must be between 1 and 1,000. You gave " + tamt);
-						return;
-					}
+					amt = Integer.parseInt(amtArg);
 				} catch (NumberFormatException err) {
-					ctx.reply(amtArg + " is not a number.");
+					ctx.reply(amtArg +" is not an integer number.");
 					return;
 				}
 			}
 
+			if(amt < 10 || amt > 1000) {
+				ctx.reply("Amount must be between 10 and 1,000.");
+				return;
+			}
+
 			JFreeChart jfc = createChartForChannel(channel, amt);
-			CHART_THEME.apply(jfc);
-			InputStream is =ImageUtils.getInputStream(jfc.createBufferedImage(800, 600));
+			InputStream is = ImageUtils.getInputStream(jfc.createBufferedImage(800,600));
 
 			channel.sendFile(is, "activeusers.png").queue();
 		} catch (IOException err) {
@@ -105,71 +79,93 @@ public class ActivityPie extends Command {
 		}
 	}
 
-	private Map<User,Integer> getMessageCounts(TextChannel tc, int count) {
-		Map<User, Integer> res = new HashMap<>();
+	private void loadFont() {
+		try {
+			// Load our font from resources
+			InputStream is = getClass().getClassLoader().getResourceAsStream(FONT_FILENAME);
+			if(is == null) throw  new IOException("Font was null");
+			BASE_FONT = Font.createFont(Font.TRUETYPE_FONT, is);
+			is.close();
+		} catch (IOException | FontFormatException err) {
+			this.getLogger().error("Failed to load font.", err);
+		}
+	}
 
-		// Null represents the total count.
-		res.put(null, 0);
+	private void createChartTheme() {
+		// Set the starting point
+		CHART_THEME = (StandardChartTheme) StandardChartTheme.createJFreeTheme();
 
+		// Change fonts
+		CHART_THEME.setSmallFont(BASE_FONT.deriveFont(18f));
+		CHART_THEME.setRegularFont(BASE_FONT.deriveFont(Font.BOLD,20f));
+		CHART_THEME.setLargeFont(BASE_FONT.deriveFont(Font.BOLD, 25f));
+		CHART_THEME.setExtraLargeFont(BASE_FONT.deriveFont(Font.BOLD, 32f));
+
+		// Paints
+		Color invisible = new Color(0,0,0,0);
+		CHART_THEME.setChartBackgroundPaint(invisible);
+		CHART_THEME.setPlotBackgroundPaint(invisible);
+		CHART_THEME.setPlotOutlinePaint(invisible);
+		CHART_THEME.setShadowPaint(invisible);
+	}
+
+	private Map<String, Integer> getMessageCounts(TextChannel tc, int count) {
+		Map<String, Integer> res = new HashMap<>();
 		MessageHistory history = tc.getHistory();
 
-		// Fetch until 0 remain
+		// While more than 0 remain
 		while(count > 0) {
-			List<Message> messages;
+			List<Message> msgs;
 
-			// Fetch 100 or remaining amount, whichever is smaller,
-			// subtracting remaining count appropriately
+			// Fetch 100 or remaining, whichever is smaller
 			if(count < 100) {
-				// Last fetch
-				messages = history.retrievePast(count).complete();
-				count = 0;
+				// This is the last fetch. 100 may be too many.
+				msgs = history.retrievePast(count).complete();
 			} else {
-				messages = history.retrievePast(100).complete();
-				count -= 100;
+				msgs = history.retrievePast(100).complete();
 			}
+			count -= 100;
 
 			// Iterate over every message in this batch
-			for(Message m : messages) {
-				res.put(null, res.get(null)+1);
-
+			for(Message m : msgs) {
 				User author = m.getAuthor();
 
-				// Create the key if they don't have one yet
-				if(!res.containsKey(author)) {
-					res.put(author, 1);
-					continue;
-				}
-
-				res.replace(author, res.get(author)+1);
+				// Increment their count, creating it as necessary
+				res.compute(author.getAsTag(), (k,v) -> v==null ? 1 : v+1);
 			}
+
+			// Add this batch to our total count
+			int size = msgs.size();
+			res.compute("TOTAL", (k,v) -> v == null ? size : v + size);
 		}
 
 		return res;
 	}
 
-	private DefaultPieDataset generateDataset(Map<User, Integer> map) {
+	private DefaultPieDataset generateDataset(Map<String, Integer> map) {
 		DefaultPieDataset ds = new DefaultPieDataset();
-		int total = map.get(null);
+		int total = map.get("TOTAL");
 		ds.setValue("Other", 0);
-		ds.sortByValues(SortOrder.ASCENDING);
 
 		map.keySet().iterator().forEachRemaining(user -> {
-			if(user != null) {
-				double percentage = (double)(map.get(user)) / total;
+			double percentage = (double)(map.get(user)) / total;
 
-				if(percentage > MINIMUM_PERCENTAGE) {
-					ds.setValue(user.getAsTag(), map.get(user));
-				} else {
-					// Increment other count
-					ds.setValue("Other", ds.getValue("Other").intValue() + map.get(user));
-				}
+			if(percentage > MINIMUM_PERCENTAGE) {
+				ds.setValue(user, map.get(user));
+			} else {
+				ds.setValue("Other", ds.getValue("Other").intValue() + map.get(user));
 			}
 		});
 
-		// Remove other if nobody was low enough
+		// Remove Other if unused
 		if(ds.getValue("Other").intValue() == 0) {
 			ds.remove("Other");
 		}
+		// Remove meta TOTAL value
+		ds.remove("TOTAL");
+
+
+		ds.sortByValues(SortOrder.DESCENDING);
 
 		return ds;
 	}
@@ -177,18 +173,30 @@ public class ActivityPie extends Command {
 	private JFreeChart createChartForChannel(TextChannel tc, int amount) {
 		DefaultPieDataset dataset = generateDataset(getMessageCounts(tc, amount));
 		JFreeChart chart = ChartFactory.createPieChart(
-				"Most active users in the last "+ amount +" messages.",
+				"Most active users in the last " + amount + " messages.",
 				dataset,
 				true,
-				true,
+				false,
 				false
 		);
+		CHART_THEME.apply(chart);
+		chart.getLegend().setItemFont(BASE_FONT.deriveFont(30f));
+
+		PiePlot plot = (PiePlot) chart.getPlot();
+		plot.setLabelGenerator(null);
 
 		// Customize colors
-		// TODO: Figure out why the fizzity-uck this isn't working.
-		PiePlot plot = (PiePlot) chart.getPlot();
-		plot.setSectionPaint("Other", new Color(80,80,80,255));
+		int i = 0;
+		for(Object key : plot.getDataset().getKeys()) {
+			if(key.equals("Other")) {
+				continue;
+			}
 
+			plot.setSectionPaint((String) key, COLORS[i%COLORS.length]);
+			i++;
+		}
+
+		plot.setSectionPaint("Other", Color.GRAY);
 		return chart;
 	}
 }
