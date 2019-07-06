@@ -19,7 +19,6 @@ import java.net.URL;
 
 public class WelcomeModule extends ListenerAdapter {
 	private static final Logger logger = LogManager.getLogger(WelcomeModule.class.getName());
-	private static Font FONT;
 
 	// Formatting consts
 	private static final String FONT_NAME = "SourceCodePro-Regular.ttf";
@@ -60,16 +59,7 @@ public class WelcomeModule extends ListenerAdapter {
 			IMG_H-PADDING-HEADER.getHeight()
 	);
 
-	public WelcomeModule() {
-		try {
-			InputStream is = getClass().getClassLoader()
-					.getResourceAsStream(FONT_NAME);
-			if(is == null) throw new IOException("Font was null.");
-			FONT = Font.createFont(Font.TRUETYPE_FONT, is);
-		} catch (IOException | FontFormatException err) {
-			logger.error("Failed to prepare font");
-		}
-	}
+	public WelcomeModule() {}
 
 	@Override
 	public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
@@ -89,7 +79,7 @@ public class WelcomeModule extends ListenerAdapter {
 			BufferedImage img = new BufferedImage(IMG_W, IMG_H, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g = img.createGraphics();
 			ImageUtils.setDefaultHints(g);
-			g.setFont(FONT);
+			g.setFont(ImageUtils.getFont());
 			ImageUtils ge = new ImageUtils(g, "WelcomeModule ("+ userTag +")");
 
 			// Background

@@ -22,6 +22,8 @@ import static java.awt.RenderingHints.*;
 public class ImageUtils {
 	private static Color DEBUG_COLOR = new Color(255,0,255);
 	private static final Logger logger = LogManager.getLogger(ImageUtils.class.getName());
+	private static final String DEFAULT_FONT_NAME = "SourceCodePro-Regular.ttf";
+	private static final Font FONT = ImageUtils.initFont();
 
 	private Graphics2D g;
 	private String name;
@@ -52,6 +54,13 @@ public class ImageUtils {
 	 */
 	public boolean isDebug() {
 		return this.debug;
+	}
+
+	/**
+	 * @return the font initialized at startup
+	 */
+	public static Font getFont() {
+		return FONT;
 	}
 
 	// SETTERS AND BASE METHODS
@@ -274,6 +283,18 @@ public class ImageUtils {
 	}
 
 	// STATIC METHODS
+
+	private static Font initFont() {
+		try {
+			InputStream is = ImageUtils.class.getClassLoader()
+					.getResourceAsStream(DEFAULT_FONT_NAME);
+			if(is == null) throw new IOException("Font was null.");
+			return Font.createFont(Font.TRUETYPE_FONT, is);
+		} catch (IOException | FontFormatException err) {
+			logger.error("Failed to prepare font", err);
+		}
+		return null;
+	}
 
 	/**
 	 * Sets default rendering hints on the image for optimal quality
