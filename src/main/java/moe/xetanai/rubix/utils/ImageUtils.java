@@ -192,6 +192,23 @@ public class ImageUtils {
 		return debugDrawBounds(bounds);
 	}
 
+	public ImageUtils drawCenteredText(@Nonnull Rectangle2D bounds,@Nonnull String text,@Nullable Color color) {
+		scaleFontToBounds(text, bounds);
+
+		FontMetrics fm = this.g.getFontMetrics();
+		int yoffset = (int) ((bounds.getHeight() - fm.getHeight())/2) - fm.getMaxDescent();
+		int xoffset = (int) ((bounds.getWidth() - fm.stringWidth(text)) /2);
+
+
+		this.g.setColor(color);
+		this.g.drawString(
+				text,
+				(int) bounds.getX() + xoffset,
+				(int) (bounds.getY()+bounds.getHeight()) + yoffset
+		);
+		return debugDrawBounds(bounds);
+	}
+
 	// PRIVATE HELPER METHODS
 
 	/**
