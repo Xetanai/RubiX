@@ -1,9 +1,12 @@
 package moe.xetanai.rubix.entities;
 
 import moe.xetanai.rubix.database.tables.GuildSettingsTable;
+import moe.xetanai.rubix.modules.CommandModule;
+import moe.xetanai.rubix.utils.RatelimitUtils;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import javax.annotation.Nonnull;
+import java.time.OffsetDateTime;
 
 /**
  * Represents a particular use of a command
@@ -60,6 +63,16 @@ public class CommandContext {
 	@Nonnull
 	public GuildSettingsTable.GuildSettings getGuildSettings() {
 		return guildSettings;
+	}
+
+	// Setter methods
+
+	/**
+	 * Ratelimits the current command for a given amount of time for the current user
+	 * @param seconds Seconds to limit for
+	 */
+	public void setRatelimitTime(int seconds) {
+		RatelimitUtils.setResetTime(this.event.getAuthor(), CommandModule.getCommandByKeyword(this.getKeyword()), OffsetDateTime.now().plusSeconds(seconds));
 	}
 
 	// Helper methods

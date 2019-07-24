@@ -4,6 +4,7 @@ import moe.xetanai.rubix.entities.Command;
 import moe.xetanai.rubix.entities.CommandContext;
 import moe.xetanai.rubix.entities.CommandException;
 import moe.xetanai.rubix.utils.ImageUtils;
+import moe.xetanai.rubix.utils.RatelimitUtils;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -21,6 +22,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,20 +69,31 @@ public class ActivityPie extends Command {
 
 	@Override
 	public void run(CommandContext ctx) throws CommandException {
+		ctx.setRatelimitTime(60);
 		String arg = ctx.getArgs().length == 1 ? null : ctx.getArgs()[1];
 		int countarg = getMessageCountArg(arg);
 
-		if (countarg < 10 || countarg > 1000) {
-			ctx.reply("Amount must be between 10 and 1,000.");
+		if (countarg < 10 || countarg > 10000) {
+			ctx.reply("Amount must be between 10 and 10,000.");
 			return;
 		}
 
 		try {
+			Message[] loadingmsgs = {null}; // Fucking lambdas.
+			if(countarg >= 1000) {
+				ctx.getEvent().getChannel().sendMessage("<a:rubixloading:603415143874822194>").queue(m->loadingmsgs[0]=m);
+				ctx.setRatelimitTime(countarg/2);
+			}
 			TextChannel channel = ctx.getEvent().getTextChannel();
 			JFreeChart chart = createChartForChannel(channel, countarg);
 			BufferedImage img = decorateImage(generateImage(chart), ctx.getEvent().getTextChannel().getName(), countarg);
 
-			ctx.getEvent().getChannel().sendFile(ImageUtils.getInputStream(img), "rubix.png").queue();
+			ctx.getEvent().getChannel().sendFile(ImageUtils.getInputStream(img), "rubix.png").queue(m->{
+				Message loadmsg = loadingmsgs[0];
+				if(loadmsg == null) return;
+
+				loadmsg.delete().queue();
+			});
 		} catch (IOException err) {
 			getLogger().error("Failed to generate chart.", err);
 		}

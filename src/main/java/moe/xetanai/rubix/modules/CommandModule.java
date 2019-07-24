@@ -1,11 +1,13 @@
 package moe.xetanai.rubix.modules;
 
+import humanize.Humanize;
 import moe.xetanai.rubix.Main;
 import moe.xetanai.rubix.database.tables.GuildSettingsTable;
 import moe.xetanai.rubix.entities.Command;
 import moe.xetanai.rubix.entities.CommandContext;
 import moe.xetanai.rubix.entities.commands.About;
 import moe.xetanai.rubix.entities.commands.ActivityPie;
+import moe.xetanai.rubix.utils.RatelimitUtils;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -13,7 +15,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +71,15 @@ public class CommandModule extends ListenerAdapter {
 			if(!command.isAllowedInDms() && event.getChannelType() == ChannelType.PRIVATE) {
 				ctx.reply("This command must be used in a server.");
 				logger.traceExit("Not allowed in DM");
+				return;
+			}
+
+			// Check ratelimits
+			OffsetDateTime resetTime = RatelimitUtils.getResetTime(event.getAuthor(), command);
+			if(resetTime != null && resetTime.isAfter(OffsetDateTime.now())) {
+				String humanized = Humanize.naturalTime(Date.from(resetTime.toInstant())); // Why is Java time so stupid?
+				ctx.reply("This command is on cooldown! You can use it again "+ humanized +".");
+				logger.traceExit("Ratelimit");
 				return;
 			}
 
