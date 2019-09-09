@@ -8,6 +8,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import javax.annotation.Nonnull;
 import java.time.OffsetDateTime;
 
+// TODO: Refactor literally *all* of this.
+
 /**
  * Represents a particular use of a command
  */

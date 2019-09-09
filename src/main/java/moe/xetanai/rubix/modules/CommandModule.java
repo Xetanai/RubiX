@@ -7,6 +7,8 @@ import moe.xetanai.rubix.entities.Command;
 import moe.xetanai.rubix.entities.CommandContext;
 import moe.xetanai.rubix.entities.commands.About;
 import moe.xetanai.rubix.entities.commands.ActivityPie;
+import moe.xetanai.rubix.entities.commands.ThrowError;
+import moe.xetanai.rubix.utils.MiscUtils;
 import moe.xetanai.rubix.utils.RatelimitUtils;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -89,7 +91,6 @@ public class CommandModule extends ListenerAdapter {
 			logger.traceExit("SQL error");
 			return;
 		} catch (Exception err) {
-			// TODO: Automatic reporting
 			String msg = "Command threw an error. This has been reported to the dev automatically.\n";
 			msg += "Error: `"+ err.getMessage() +"`";
 			if(err.getCause() != null) {
@@ -98,6 +99,7 @@ public class CommandModule extends ListenerAdapter {
 			}
 
 			ctx.reply(msg);
+			MiscUtils.sendMessageToDeveloper(msg);
 
 			logger.error("Command threw an error.", err);
 			logger.traceExit("Command error");
@@ -129,5 +131,6 @@ public class CommandModule extends ListenerAdapter {
 	public static void registerCommands() {
 		COMMANDS.add(new About());
 		COMMANDS.add(new ActivityPie());
+		COMMANDS.add(new ThrowError());
 	}
 }
