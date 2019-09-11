@@ -10,6 +10,8 @@ public class BotMetaUtils {
     private static SelfUser BOT_USER = null;
     private static User[] OWNERS = null;
 
+    private static String PREFIX = "!"; // Should all else fail, we *need* a prefix of some sort, lest chaos ensue.
+
     private BotMetaUtils () {}
 
     /**
@@ -36,5 +38,21 @@ public class BotMetaUtils {
             }
         }
         return OWNERS;
+    }
+
+    /**
+     * @return the default prefix to use when none is configured by the guild
+     */
+    public static String getDefaultPrefix () {
+        return PREFIX;
+    }
+
+    /**
+     * Sets the prefix to be used when none is configured
+     *
+     * @param prefix The new prefix to use
+     */
+    public static void setDefaultPrefix (String prefix) {
+        PREFIX = prefix;
     }
 }

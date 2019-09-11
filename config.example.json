@@ -2,12 +2,18 @@
 // You will need to remove these comments, as they are not in the JSON spec and
 // are here solely to help outline what a config should look like.
 {
-  "bot" : {
-    "token" : "" // Your bot's token from the Discord Developer Portal
+  "bot": {
+    "token": ""
+    // Your bot's token from the Discord Developer Portal
+    "defaultPrefix": "!"
+    // The default prefix to use when a server hasn't configured one of its own
   },
-  "database" : {
-    "url" : "jdbc:postgresql://127.0.0.1:5432/Rubix", // The JDBC connection URL to use
-    "username" : "", // Database username
-    "password" : "" // Database password
+  "database": {
+    "url": "jdbc:postgresql://127.0.0.1:5432/Rubix",
+    // The JDBC connection URL to use
+    "username": "",
+    // Database username
+    "password": ""
+    // Database password
   }
 }

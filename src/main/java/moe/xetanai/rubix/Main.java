@@ -3,6 +3,7 @@ package moe.xetanai.rubix;
 import moe.xetanai.rubix.database.Database;
 import moe.xetanai.rubix.modules.CommandModule;
 import moe.xetanai.rubix.modules.WelcomeModule;
+import moe.xetanai.rubix.utils.BotMetaUtils;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -38,6 +39,7 @@ public class Main {
             // Get objects for our various config types
             JSONObject botCfg = config.getJSONObject("bot");
             this.database = new Database(config.getJSONObject("database"));
+            BotMetaUtils.setDefaultPrefix(botCfg.getString("defaultPrefix"));
 
             // Everything else checks out. Get ready to authenticate with Discord
             JDABuilder apibuilder = new JDABuilder(AccountType.BOT).setToken(botCfg.getString("token")).setAudioEnabled(false).addEventListener(new WelcomeModule()).addEventListener(new CommandModule(this));
