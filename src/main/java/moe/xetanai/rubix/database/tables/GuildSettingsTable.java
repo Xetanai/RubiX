@@ -3,7 +3,6 @@ package moe.xetanai.rubix.database.tables;
 import moe.xetanai.rubix.database.Column;
 import moe.xetanai.rubix.database.Database;
 import moe.xetanai.rubix.database.Table;
-import moe.xetanai.rubix.utils.BotMetaUtils;
 
 import javax.annotation.Nonnull;
 import java.sql.Connection;
@@ -17,7 +16,7 @@ import java.sql.SQLException;
 public class GuildSettingsTable extends Table {
 
     private Column<Long> DISCORD_ID = new Column<>("discordid", -1L);
-    private Column<String> PREFIX = new Column<>("prefix", BotMetaUtils.getDefaultPrefix());
+    private Column<String> PREFIX = new Column<>("prefix", null);
 
     /**
      * Creates a GuildSettingsTable, responsible for managing and parsing guild settings
