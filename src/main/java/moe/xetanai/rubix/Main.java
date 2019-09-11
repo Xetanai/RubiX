@@ -20,74 +20,72 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 public class Main {
-	private static final Logger logger = LogManager.getLogger(Main.class.getName());
 
-	private Database database;
-	private static JDA api;
+    private static final Logger logger = LogManager.getLogger(Main.class.getName());
 
-	private Main() {
-		logger.info("Starting Rubix v"+ RubixInfo.VERSION);
+    private Database database;
+    private static JDA api;
 
-		try {
-			logger.info("Loading config.json");
-			String confcontents = getConfigFileContents();
+    private Main () {
+        logger.info("Starting Rubix v" + RubixInfo.VERSION);
 
-			JSONObject config = new JSONObject(new JSONTokener(confcontents));
+        try {
+            logger.info("Loading config.json");
+            String confcontents = getConfigFileContents();
 
-			// Get objects for our various config types
-			JSONObject botCfg = config.getJSONObject("bot");
-			this.database = new Database(config.getJSONObject("database"));
+            JSONObject config = new JSONObject(new JSONTokener(confcontents));
 
-			// Everything else checks out. Get ready to authenticate with Discord
-			JDABuilder apibuilder = new JDABuilder(AccountType.BOT)
-					.setToken(botCfg.getString("token"))
-					.setAudioEnabled(false)
-					.addEventListener(new WelcomeModule())
-					.addEventListener(new CommandModule(this));
-			api = apibuilder.build();
-		} catch (IOException | JSONException err) {
-			logger.fatal("Failed to load and parse configuration", err);
-			System.exit(1);
-		} catch (LoginException err) {
-			logger.fatal("Failed to login to Discord", err);
-			System.exit(1);
-		}
+            // Get objects for our various config types
+            JSONObject botCfg = config.getJSONObject("bot");
+            this.database = new Database(config.getJSONObject("database"));
 
-		logger.traceExit();
-	}
+            // Everything else checks out. Get ready to authenticate with Discord
+            JDABuilder apibuilder = new JDABuilder(AccountType.BOT).setToken(botCfg.getString("token")).setAudioEnabled(false).addEventListener(new WelcomeModule()).addEventListener(new CommandModule(this));
+            api = apibuilder.build();
+        } catch (IOException | JSONException err) {
+            logger.fatal("Failed to load and parse configuration", err);
+            System.exit(1);
+        } catch (LoginException err) {
+            logger.fatal("Failed to login to Discord", err);
+            System.exit(1);
+        }
 
-	/**
-	 * @return config.json contents as a string
-	 * @throws IOException if there was an IO error while reading it
-	 */
-	private String getConfigFileContents() throws IOException {
-		// Open and parse the config file.
-		StringBuilder configContents = new StringBuilder();
-		Stream<String> stream = Files.lines(Paths.get("config.json"), StandardCharsets.UTF_8);
-		stream.forEach(line -> configContents.append(line).append("\n"));
-		stream.close();
+        logger.traceExit();
+    }
 
-		return configContents.toString();
-	}
+    /**
+     * @return config.json contents as a string
+     *
+     * @throws IOException if there was an IO error while reading it
+     */
+    private String getConfigFileContents () throws IOException {
+        // Open and parse the config file.
+        StringBuilder configContents = new StringBuilder();
+        Stream<String> stream = Files.lines(Paths.get("config.json"), StandardCharsets.UTF_8);
+        stream.forEach(line -> configContents.append(line).append("\n"));
+        stream.close();
 
-	/**
-	 * @return Database
-	 */
-	public Database getDatabase() {
-		return this.database;
-	}
+        return configContents.toString();
+    }
 
-	/**
-	 * @return JDA API root
-	 */
-	public static JDA getApi() {
-		return api;
-	}
+    /**
+     * @return Database
+     */
+    public Database getDatabase () {
+        return this.database;
+    }
 
-	/**
-	 * Lights, camera, action!
-	 */
-	public static void main(String[] args) {
-		new Main();
-	}
+    /**
+     * @return JDA API root
+     */
+    public static JDA getApi () {
+        return api;
+    }
+
+    /**
+     * Lights, camera, action!
+     */
+    public static void main (String[] args) {
+        new Main();
+    }
 }

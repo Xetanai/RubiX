@@ -10,126 +10,137 @@ import javax.annotation.Nonnull;
  * Represents a command
  */
 public class Command {
-	private final Logger logger;
 
-	private String[] keywords;
-	private Permission[] perms_bot;
-	private Permission[] perms_user;
+    private final Logger logger;
 
-	/**
-	 * Creates a command
-	 * @param keywords keywords that can invoke this command
-	 */
-	public Command(@Nonnull String[] keywords) {
-		this.keywords = keywords;
-		this.logger = LogManager.getLogger(this.getClass().getName());
+    private String[] keywords;
+    private Permission[] perms_bot;
+    private Permission[] perms_user;
 
-		this.perms_bot = new Permission[0];
-		this.perms_user = new Permission[0];
-	}
+    /**
+     * Creates a command
+     *
+     * @param keywords keywords that can invoke this command
+     */
+    public Command (@Nonnull String[] keywords) {
+        this.keywords = keywords;
+        this.logger = LogManager.getLogger(this.getClass().getName());
 
-	// Getters
+        this.perms_bot = new Permission[0];
+        this.perms_user = new Permission[0];
+    }
 
-	/**
-	 * @return logger
-	 */
-	@Nonnull
-	protected Logger getLogger() {
-		return this.logger;
-	}
+    // Getters
 
-	/**
-	 * @return array of keywords which invoke this command
-	 */
-	@Nonnull
-	public String[] getKeywords() {
-		return keywords;
-	}
+    /**
+     * @return logger
+     */
+    @Nonnull
+    protected Logger getLogger () {
+        return this.logger;
+    }
 
-	/**
-	 * Check if a keyword matches any for this command
-	 * @param keyword Keyword to check
-	 * @return True if this command matches, false otherwise
-	 */
-	public boolean matchesKeyword(String keyword) {
-		for(String s : this.keywords) {
-			if(s.equals(keyword)) {
-				return true;
-			}
-		}
+    /**
+     * @return array of keywords which invoke this command
+     */
+    @Nonnull
+    public String[] getKeywords () {
+        return this.keywords;
+    }
 
-		return false;
-	}
+    /**
+     * Check if a keyword matches any for this command
+     *
+     * @param keyword Keyword to check
+     *
+     * @return True if this command matches, false otherwise
+     */
+    public boolean matchesKeyword (String keyword) {
+        for (String s : this.keywords) {
+            if (s.equals(keyword)) {
+                return true;
+            }
+        }
 
-	/**
-	 * @return true if this command is allowed in DMs. False otherwise
-	 */
-	public boolean isAllowedInDms() {
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * @return array of permissions the bot requires for this command
-	 */
-	@Nonnull
-	public Permission[] getBotPermissions() {
-		return perms_bot;
-	}
+    /**
+     * @return true if this command is allowed in DMs. False otherwise
+     */
+    public boolean isAllowedInDms () {
+        return false;
+    }
 
-	/**
-	 * @return array of permissions the invoking user requires for this command
-	 */
-	@Nonnull
-	public Permission[] getUserPermissions() {
-		return perms_user;
-	}
+    /**
+     * @return array of permissions the bot requires for this command
+     */
+    @Nonnull
+    public Permission[] getBotPermissions () {
+        return this.perms_bot;
+    }
 
-	// Setters
+    /**
+     * @return array of permissions the invoking user requires for this command
+     */
+    @Nonnull
+    public Permission[] getUserPermissions () {
+        return this.perms_user;
+    }
 
-	/**
-	 * Changes this command's keywords. Effective immediately
-	 * @param keywords new keywords. Old array replaced
-	 * @return chainable this
-	 */
-	@Nonnull
-	public Command setKeywords(@Nonnull String[] keywords) {
-		this.keywords = keywords;
-		return this;
-	}
+    // Setters
 
-	/**
-	 * Changes this command's permission requirements. Effective immediately
-	 * Does not have any effect on Discord-enforced permission requirements... Obviously.
-	 * @param perms new permissions. Old array replaced
-	 * @return chainable this
-	 */
-	@Nonnull
-	public Command setBotPermissions(@Nonnull Permission[] perms) {
-		this.perms_bot = perms;
-		return this;
-	}
+    /**
+     * Changes this command's keywords. Effective immediately
+     *
+     * @param keywords new keywords. Old array replaced
+     *
+     * @return chainable this
+     */
+    @Nonnull
+    public Command setKeywords (@Nonnull String[] keywords) {
+        this.keywords = keywords;
+        return this;
+    }
 
-	/**
-	 * Changes this command's permission requirements. Effective immediately
-	 *
-	 * @param perms new permissions. Old array replaced
-	 * @return chainable this
-	 */
-	@Nonnull
-	public Command setUserPermissions(@Nonnull Permission[] perms) {
-		this.perms_user = perms;
-		return this;
-	}
+    /**
+     * Changes this command's permission requirements. Effective immediately
+     * Does not have any effect on Discord-enforced permission requirements... Obviously.
+     *
+     * @param perms new permissions. Old array replaced
+     *
+     * @return chainable this
+     */
+    @Nonnull
+    public Command setBotPermissions (@Nonnull Permission[] perms) {
+        this.perms_bot = perms;
+        return this;
+    }
 
-	// General methods
+    /**
+     * Changes this command's permission requirements. Effective immediately
+     *
+     * @param perms new permissions. Old array replaced
+     *
+     * @return chainable this
+     */
+    @Nonnull
+    public Command setUserPermissions (@Nonnull Permission[] perms) {
+        this.perms_user = perms;
+        return this;
+    }
 
-	/**
-	 * Invoke the command
-	 * @param ctx CommandContext containing context for the command
-	 * @throws CommandException if the command threw an error
-	 */
-	public void run(@Nonnull CommandContext ctx) throws CommandException {
-		logger.warn("Command not implemented.");
-		throw new CommandException("Command not implemented.");
-	}
+    // General methods
+
+    /**
+     * Invoke the command
+     *
+     * @param ctx CommandContext containing context for the command
+     *
+     * @throws CommandException if the command threw an error
+     */
+    public void run (@Nonnull CommandContext ctx) throws CommandException {
+	    this.logger.warn("Command not implemented.");
+        throw new CommandException("Command not implemented.");
+    }
 }

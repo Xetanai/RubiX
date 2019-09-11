@@ -14,76 +14,81 @@ import java.time.OffsetDateTime;
  * Represents a particular use of a command
  */
 public class CommandContext {
-	private MessageReceivedEvent event;
-	private GuildSettingsTable.GuildSettings guildSettings;
-	private String[] args;
 
-	/**
-	 * Create context from the event and guildsettings
-	 * @param event the message event that invoked the command
-	 * @param guildSettings the settings of the guild it was in
-	 */
-	public CommandContext(MessageReceivedEvent event, GuildSettingsTable.GuildSettings guildSettings) {
-		this.event = event;
-		this.guildSettings = guildSettings;
-		this.args = event.getMessage().getContentRaw().split(" ");
+    private MessageReceivedEvent event;
+    private GuildSettingsTable.GuildSettings guildSettings;
+    private String[] args;
 
-		// Strip prefix from the keyword argument
-		this.args[0] = this.args[0].substring(guildSettings.getPrefix().length());
-	}
+    /**
+     * Create context from the event and guildsettings
+     *
+     * @param event         the message event that invoked the command
+     * @param guildSettings the settings of the guild it was in
+     */
+    public CommandContext (MessageReceivedEvent event, GuildSettingsTable.GuildSettings guildSettings) {
+        this.event = event;
+        this.guildSettings = guildSettings;
+        this.args = event.getMessage().getContentRaw().split(" ");
 
-	// Getters
+        // Strip prefix from the keyword argument
+        this.args[0] = this.args[0].substring(guildSettings.getPrefix().length());
+    }
 
-	/**
-	 * @return The message received event that caused this
-	 */
-	@Nonnull
-	public MessageReceivedEvent getEvent() {
-		return this.event;
-	}
+    // Getters
 
-	/**
-	 * @return The keyword used
-	 */
-	@Nonnull
-	public String getKeyword() {
-		return this.args[0];
-	}
+    /**
+     * @return The message received event that caused this
+     */
+    @Nonnull
+    public MessageReceivedEvent getEvent () {
+        return this.event;
+    }
 
-	/**
-	 * Returns arguments given, split by spaces. Index 0 is the keyword
-	 * @return Arguments given
-	 */
-	@Nonnull
-	public String[] getArgs() {
-		return this.args;
-	}
+    /**
+     * @return The keyword used
+     */
+    @Nonnull
+    public String getKeyword () {
+        return this.args[0];
+    }
 
-	/**
-	 * @return Get this guild's settings
-	 */
-	@Nonnull
-	public GuildSettingsTable.GuildSettings getGuildSettings() {
-		return guildSettings;
-	}
+    /**
+     * Returns arguments given, split by spaces. Index 0 is the keyword
+     *
+     * @return Arguments given
+     */
+    @Nonnull
+    public String[] getArgs () {
+        return this.args;
+    }
 
-	// Setter methods
+    /**
+     * @return Get this guild's settings
+     */
+    @Nonnull
+    public GuildSettingsTable.GuildSettings getGuildSettings () {
+        return this.guildSettings;
+    }
 
-	/**
-	 * Ratelimits the current command for a given amount of time for the current user
-	 * @param seconds Seconds to limit for
-	 */
-	public void setRatelimitTime(int seconds) {
-		RatelimitUtils.setResetTime(this.event.getAuthor(), CommandModule.getCommandByKeyword(this.getKeyword()), OffsetDateTime.now().plusSeconds(seconds));
-	}
+    // Setter methods
 
-	// Helper methods
+    /**
+     * Ratelimits the current command for a given amount of time for the current user
+     *
+     * @param seconds Seconds to limit for
+     */
+    public void setRatelimitTime (int seconds) {
+        RatelimitUtils.setResetTime(this.event.getAuthor(), CommandModule.getCommandByKeyword(this.getKeyword()), OffsetDateTime.now().plusSeconds(seconds));
+    }
 
-	/**
-	 * Quickly send a basic reply in the channel
-	 * @param msg message to send
-	 */
-	public void reply(@Nonnull String msg) {
-		this.event.getChannel().sendMessage(msg).queue();
-	}
+    // Helper methods
+
+    /**
+     * Quickly send a basic reply in the channel
+     *
+     * @param msg message to send
+     */
+    public void reply (@Nonnull String msg) {
+        this.event.getChannel().sendMessage(msg).queue();
+    }
 }

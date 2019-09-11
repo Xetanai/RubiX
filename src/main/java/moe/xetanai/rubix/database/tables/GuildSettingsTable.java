@@ -14,85 +14,93 @@ import java.sql.SQLException;
  * Represents the basic guild settings SQL table
  */
 public class GuildSettingsTable extends Table {
-	private Column<Long> DISCORD_ID = new Column<>("discordid", -1L);
-	private Column<String> PREFIX = new Column<>("prefix","!");
 
-	/**
-	 * Creates a GuildSettingsTable, responsible for managing and parsing guild settings
-	 * @param db Database to use
-	 */
-	public GuildSettingsTable(@Nonnull Database db) {
-		super(db);
-	}
+    private Column<Long> DISCORD_ID = new Column<>("discordid", -1L);
+    private Column<String> PREFIX = new Column<>("prefix", "!");
 
-	/**
-	 * Get the guild settings for a server
-	 * @param id ID of the server to get settings for
-	 * @return Guild's basic settings deserialized
-	 * @throws SQLException if the underlying database errors
-	 */
-	@Nonnull
-	public GuildSettings getSettings(long id) throws SQLException {
-		Connection con = this.getDb().getConnection();
+    /**
+     * Creates a GuildSettingsTable, responsible for managing and parsing guild settings
+     *
+     * @param db Database to use
+     */
+    public GuildSettingsTable (@Nonnull Database db) {
+        super(db);
+    }
 
-		if(con == null) {
-			throw new SQLException("Failed to get a connection from pool");
-		}
+    /**
+     * Get the guild settings for a server
+     *
+     * @param id ID of the server to get settings for
+     *
+     * @return Guild's basic settings deserialized
+     *
+     * @throws SQLException if the underlying database errors
+     */
+    @Nonnull
+    public GuildSettings getSettings (long id) throws SQLException {
+        Connection con = this.getDb().getConnection();
 
-		PreparedStatement ps = con.prepareStatement("SELECT * FROM \"Guilds\" WHERE discordid=?");
-		ps.setLong(1, id);
+        if (con == null) {
+            throw new SQLException("Failed to get a connection from pool");
+        }
 
-		ResultSet rs = ps.executeQuery();
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM \"Guilds\" WHERE discordid=?");
+        ps.setLong(1, id);
 
-		GuildSettings gs;
+        ResultSet rs = ps.executeQuery();
 
-		if(!rs.next()) {
-			gs = new GuildSettings();
-		} else {
-			gs = new GuildSettings(rs);
-		}
-		Database.closeAll(con, ps, rs);
-		return gs;
-	}
+        GuildSettings gs;
 
-	@Nonnull
-	public GuildSettings getDefault() {
-		return new GuildSettings();
-	}
+        if (!rs.next()) {
+            gs = new GuildSettings();
+        } else {
+            gs = new GuildSettings(rs);
+        }
+        Database.closeAll(con, ps, rs);
+        return gs;
+    }
 
-	/**
-	 * Represents a particular guild's basic settings
-	 */
-	public class GuildSettings {
-		private final long id;
-		private final String prefix;
+    @Nonnull
+    public GuildSettings getDefault () {
+        return new GuildSettings();
+    }
 
-		GuildSettings() {
-			this.id = DISCORD_ID.getDefaultValue();
-			this.prefix = PREFIX.getDefaultValue();
-		}
+    /**
+     * Represents a particular guild's basic settings
+     */
+    public class GuildSettings {
 
-		private GuildSettings(@Nonnull ResultSet rs) {
-			this.id = DISCORD_ID.getLong(rs);
-			this.prefix = PREFIX.getString(rs);
-		}
+        private final long id;
+        private final String prefix;
 
-		/**
-		 * Gets the ID of the guild these settings are for
-		 * @return Long ID of the guild, or -1L if using defaults
-		 */
-		public long getId() {
-			return id;
-		}
+        GuildSettings () {
+            this.id = GuildSettingsTable.this.DISCORD_ID.getDefaultValue();
+            this.prefix = GuildSettingsTable.this.PREFIX.getDefaultValue();
+        }
 
-		/**
-		 * Gets the effective prefix of the guild
-		 * This will be the one the guild has set, or the default if none is set
-		 * @return The effective command prefix of the server
-		 */
-		@Nonnull
-		public String getPrefix() {
-			return prefix;
-		}
-	}
+        private GuildSettings (@Nonnull ResultSet rs) {
+            this.id = GuildSettingsTable.this.DISCORD_ID.getLong(rs);
+            this.prefix = GuildSettingsTable.this.PREFIX.getString(rs);
+        }
+
+        /**
+         * Gets the ID of the guild these settings are for
+         *
+         * @return Long ID of the guild, or -1L if using defaults
+         */
+        public long getId () {
+            return this.id;
+        }
+
+        /**
+         * Gets the effective prefix of the guild
+         * This will be the one the guild has set, or the default if none is set
+         *
+         * @return The effective command prefix of the server
+         */
+        @Nonnull
+        public String getPrefix () {
+            return this.prefix;
+        }
+    }
 }
