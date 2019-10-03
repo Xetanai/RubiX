@@ -24,7 +24,7 @@ public class Main {
 
     private static final Logger logger = LogManager.getLogger(Main.class.getName());
 
-    private Database database;
+    private static Database database;
     private static JDA api;
 
     private Main () {
@@ -42,7 +42,11 @@ public class Main {
             BotMetaUtils.setDefaultPrefix(botCfg.getString("defaultPrefix"));
 
             // Everything else checks out. Get ready to authenticate with Discord
-            JDABuilder apibuilder = new JDABuilder(AccountType.BOT).setToken(botCfg.getString("token")).setAudioEnabled(false).addEventListener(new WelcomeModule()).addEventListener(new CommandModule(this));
+            JDABuilder apibuilder = new JDABuilder(AccountType.BOT)
+                .setToken(botCfg.getString("token"))
+                .setAudioEnabled(false)
+                .addEventListener(new WelcomeModule())
+                .addEventListener(new CommandModule());
             api = apibuilder.build();
         } catch (IOException | JSONException err) {
             logger.fatal("Failed to load and parse configuration", err);
@@ -73,8 +77,8 @@ public class Main {
     /**
      * @return Database
      */
-    public Database getDatabase () {
-        return this.database;
+    public static Database getDatabase () {
+        return database;
     }
 
     /**

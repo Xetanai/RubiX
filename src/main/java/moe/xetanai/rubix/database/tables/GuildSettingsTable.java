@@ -3,8 +3,10 @@ package moe.xetanai.rubix.database.tables;
 import moe.xetanai.rubix.database.Column;
 import moe.xetanai.rubix.database.Database;
 import moe.xetanai.rubix.database.Table;
+import moe.xetanai.rubix.utils.BotMetaUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -93,14 +95,28 @@ public class GuildSettingsTable extends Table {
         }
 
         /**
-         * Gets the effective prefix of the guild
-         * This will be the one the guild has set, or the default if none is set
+         * Gets the configured prefix of the guild
+         * This will be the one the guild has set, or null if the default is to be used
          *
-         * @return The effective command prefix of the server
+         * @return The configured command prefix of the server, or null
          */
-        @Nonnull
+        @Nullable
         public String getPrefix () {
             return this.prefix;
+        }
+
+        /**
+         * Gets the effective prefix of the guild
+         * This will be the one the guild has set if available, otherwise the bot's default.
+         *
+         * @return The configured command prefix, or the default
+         */
+        @Nonnull
+        public String getEffectivePrefix () {
+            if (getPrefix() == null) {
+                return BotMetaUtils.getDefaultPrefix();
+            }
+            return getPrefix();
         }
     }
 }

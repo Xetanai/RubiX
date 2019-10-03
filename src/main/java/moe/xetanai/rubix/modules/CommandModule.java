@@ -28,10 +28,7 @@ public class CommandModule extends ListenerAdapter {
     private static final Logger logger = LogManager.getLogger(CommandModule.class.getName());
     private static List<Command> COMMANDS = new ArrayList<>();
 
-    private final Main bot;
-
-    public CommandModule (Main bot) {
-        this.bot = bot;
+    public CommandModule () {
         registerCommands();
     }
 
