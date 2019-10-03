@@ -50,12 +50,12 @@ public class CommandModule extends ListenerAdapter {
 
             if (command == null) {
                 // TODO: Check config
-                //                ctx.reply("No command called `" + ctx.getKeyword() + "` exists.");
+                ctx.reply("No command called `" + ctx.getKeyword() + "` exists.");
                 logger.traceExit("No command");
                 return;
             }
             if (!command.isAllowedInDms() && event.getChannelType() == ChannelType.PRIVATE) {
-                //                ctx.reply("This command must be used in a server.");
+                ctx.reply("This command must be used in a server.");
                 logger.traceExit("Not allowed in DM");
                 return;
             }
@@ -64,7 +64,7 @@ public class CommandModule extends ListenerAdapter {
             OffsetDateTime resetTime = RatelimitUtils.getResetTime(event.getAuthor(), command);
             if (resetTime != null && resetTime.isAfter(OffsetDateTime.now())) {
                 String humanized = Humanize.naturalTime(Date.from(resetTime.toInstant())); // Why is Java time so stupid?
-                //                ctx.reply("This command is on cooldown! You can use it again " + humanized + ".");
+                ctx.reply("This command is on cooldown! You can use it again " + humanized + ".");
                 logger.traceExit("Ratelimit");
                 return;
             }
