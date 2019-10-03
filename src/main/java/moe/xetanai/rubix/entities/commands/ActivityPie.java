@@ -47,7 +47,7 @@ public class ActivityPie extends Command {
 
     @Override
     public void run (CommandContext ctx) throws CommandException {
-        ctx.setRatelimitTime(60);
+        ctx.setRateLimitTime(60);
         String arg = ctx.getArgs().length == 1 ? null : ctx.getArgs()[1];
         int countarg = getMessageCountArg(arg);
 
@@ -60,7 +60,7 @@ public class ActivityPie extends Command {
             Message[] loadingmsgs = {null}; // Fucking lambdas.
             if (countarg >= 1000) {
                 ctx.getEvent().getChannel().sendMessage("<a:rubixloading:603415143874822194>").queue(m -> loadingmsgs[0] = m);
-                ctx.setRatelimitTime(countarg / 2);
+                ctx.setRateLimitTime(countarg / 2);
             }
             TextChannel channel = ctx.getEvent().getTextChannel();
             JFreeChart chart = createChartForChannel(channel, countarg);

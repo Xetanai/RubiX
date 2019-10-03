@@ -1,7 +1,6 @@
 package moe.xetanai.rubix.modules;
 
 import humanize.Humanize;
-import moe.xetanai.rubix.Main;
 import moe.xetanai.rubix.database.tables.GuildSettingsTable;
 import moe.xetanai.rubix.entities.Command;
 import moe.xetanai.rubix.entities.CommandContext;
@@ -18,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,38 +35,27 @@ public class CommandModule extends ListenerAdapter {
         logger.traceEntry();
         // Non negotiable, this ignores bots
         if (event.getAuthor().isBot()) {return;}
-        CommandContext ctx = null;
+
+        CommandContext ctx = CommandContext.generateContext(event);
+        GuildSettingsTable.GuildSettings gs = ctx.getGuildSettings();
 
         try {
-            // Get default settings and use that as a starting point
-            GuildSettingsTable.GuildSettings gs = this.bot.getDatabase().guildSettings.getDefault();
-
-            // If this is a text channel, the server it belongs to may have settings to honor
-            if (event.getChannelType() == ChannelType.TEXT) {
-                gs = this.bot.getDatabase().guildSettings.getSettings(event.getGuild().getIdLong());
-            }
-
-            String prefix = gs.getPrefix();
-
-            // TODO: Mentions
-            if (!event.getMessage().getContentRaw().startsWith(prefix)) {
-                // Not a command, not our problem
+            if (!ctx.isValid()) {
+                // Likely not a command
                 return;
             }
 
-            // Create our command context
-            ctx = new CommandContext(event, gs);
             logger.debug("Possible command: {}", ctx.getKeyword());
             Command command = getCommandByKeyword(ctx.getKeyword());
 
             if (command == null) {
                 // TODO: Check config
-                ctx.reply("No command called `" + ctx.getKeyword() + "` exists.");
+                //                ctx.reply("No command called `" + ctx.getKeyword() + "` exists.");
                 logger.traceExit("No command");
                 return;
             }
             if (!command.isAllowedInDms() && event.getChannelType() == ChannelType.PRIVATE) {
-                ctx.reply("This command must be used in a server.");
+                //                ctx.reply("This command must be used in a server.");
                 logger.traceExit("Not allowed in DM");
                 return;
             }
@@ -77,16 +64,12 @@ public class CommandModule extends ListenerAdapter {
             OffsetDateTime resetTime = RatelimitUtils.getResetTime(event.getAuthor(), command);
             if (resetTime != null && resetTime.isAfter(OffsetDateTime.now())) {
                 String humanized = Humanize.naturalTime(Date.from(resetTime.toInstant())); // Why is Java time so stupid?
-                ctx.reply("This command is on cooldown! You can use it again " + humanized + ".");
+                //                ctx.reply("This command is on cooldown! You can use it again " + humanized + ".");
                 logger.traceExit("Ratelimit");
                 return;
             }
 
             command.run(ctx);
-        } catch (SQLException err) {
-            logger.error("SQL Exception in command module.", err);
-            logger.traceExit("SQL error");
-            return;
         } catch (Exception err) {
             String msg = "Command threw an error. This has been reported to the dev automatically.\n";
             msg += "Error: `" + err.getMessage() + "`";
