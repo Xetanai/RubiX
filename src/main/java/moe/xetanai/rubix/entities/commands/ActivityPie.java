@@ -1,4 +1,5 @@
 package moe.xetanai.rubix.entities.commands;
+// TODO: Archive this. This command existed to test JFreeChart functionality, and will probably not see much use.
 
 import moe.xetanai.rubix.entities.Command;
 import moe.xetanai.rubix.entities.CommandContext;
@@ -28,7 +29,13 @@ import java.util.Map;
 public class ActivityPie extends Command {
 
     private static double DEFAULT_OTHER_PERCENTAGE = 0.05d;
-    private static Color[] COLORS = {new Color(225, 25, 25, 255), new Color(25, 225, 25, 255), new Color(225, 125, 25, 255), new Color(225, 225, 75, 255), new Color(250, 250, 250, 255)};
+    private static Color[] COLORS = {
+        new Color(225, 25, 25, 255),
+        new Color(25, 225, 25, 255),
+        new Color(225, 125, 25, 255),
+        new Color(225, 225, 75, 255),
+        new Color(250, 250, 250, 255)
+    };
     private static StandardChartTheme CHART_THEME = ActivityPie.initChartTheme();
 
     // Bounds

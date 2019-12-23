@@ -1,4 +1,5 @@
 package moe.xetanai.rubix.modules;
+// TODO: Refactor this
 
 import moe.xetanai.rubix.utils.ImageUtils;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -27,7 +28,7 @@ public class WelcomeModule extends ListenerAdapter {
     private static final int IMG_W = 400;
     private static final int IMG_H = 100;
     private static final int BACKGROUND_RADIUS = 20;
-    private static final Color BACKGROUND_COLOR = new Color(0, 147, 255);
+    private static final Color BACKGROUND_COLOR = new Color(0, 147, 255, 100);
 
     private static final int PADDING = 15;
 

@@ -8,7 +8,6 @@ import net.dv8tion.jda.core.entities.User;
 public class BotMetaUtils {
 
     private static SelfUser BOT_USER = null;
-    private static User[] OWNERS = null;
 
     private static String PREFIX = "!"; // Should all else fail, we *need* a prefix of some sort, lest chaos ensue.
 
@@ -31,13 +30,11 @@ public class BotMetaUtils {
      * @return An array of users instantiated using the IDs in RubixInfo.OWNER_IDS
      */
     public static User[] getOwners () {
-        if (OWNERS == null) {
-            OWNERS = new User[RubixInfo.OWNER_IDS.length];
-            for (int i = 0; i < OWNERS.length; i++) {
-                OWNERS[i] = Main.getApi().getUserById(RubixInfo.OWNER_IDS[i]);
-            }
+        User[] owners = new User[RubixInfo.OWNER_IDS.length];
+        for (int i = 0; i < owners.length; i++) {
+            owners[i] = Main.getApi().getUserById(RubixInfo.OWNER_IDS[i]);
         }
-        return OWNERS;
+        return owners;
     }
 
     /**

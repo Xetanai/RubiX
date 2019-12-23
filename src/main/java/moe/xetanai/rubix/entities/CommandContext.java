@@ -5,18 +5,31 @@ import moe.xetanai.rubix.database.tables.GuildSettingsTable.GuildSettings;
 import moe.xetanai.rubix.modules.CommandModule;
 import moe.xetanai.rubix.utils.BotMetaUtils;
 import moe.xetanai.rubix.utils.RatelimitUtils;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Represents a specific command usage
@@ -24,6 +37,7 @@ import java.time.OffsetDateTime;
 public class CommandContext {
 
     private static final Logger logger = LogManager.getLogger(CommandContext.class.getName());
+    private static List<String> filteredWords = new ArrayList<>();
 
     private MessageReceivedEvent event;
     private GuildSettings guildSettings;

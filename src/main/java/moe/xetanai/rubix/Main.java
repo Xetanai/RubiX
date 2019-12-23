@@ -4,6 +4,7 @@ import moe.xetanai.rubix.database.Database;
 import moe.xetanai.rubix.modules.CommandModule;
 import moe.xetanai.rubix.modules.WelcomeModule;
 import moe.xetanai.rubix.utils.BotMetaUtils;
+import moe.xetanai.rubix.utils.FilterUtils;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -40,6 +41,9 @@ public class Main {
             JSONObject botCfg = config.getJSONObject("bot");
             this.database = new Database(config.getJSONObject("database"));
             BotMetaUtils.setDefaultPrefix(botCfg.getString("defaultPrefix"));
+
+            // Process word filter list
+            FilterUtils.processFilteredWords();
 
             // Everything else checks out. Get ready to authenticate with Discord
             JDABuilder apibuilder = new JDABuilder(AccountType.BOT)
