@@ -4,12 +4,17 @@ import com.zaxxer.hikari.HikariDataSource;
 import moe.xetanai.rubix.database.tables.GuildSettingsTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
 import org.json.JSONObject;
 
+import java.awt.desktop.SystemEventListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+// TODO: Check this on startup, and do something more noticeable than 15 console errors when DB connection fails.
 
 /**
  * Represents the database as a whole
@@ -18,6 +23,7 @@ public class Database {
 
     private static final Logger logger = LogManager.getLogger(Database.class.getName());
     private HikariDataSource ds;
+    private Flyway flyway;
 
     public final GuildSettingsTable guildSettings;
 
@@ -35,6 +41,37 @@ public class Database {
 	    this.ds.setLeakDetectionThreshold(30000);
 
 	    this.guildSettings = new GuildSettingsTable(this);
+
+	    this.flyway = this.configureFlyway(config);
+    }
+
+    /**
+     * Configures Flyway, performs any pending migrations, and then validates the database.
+     * @param config Config passed to the constructor of the Database object.
+     * @return Flyway object, in case any further calls to it are needed.
+     */
+    private Flyway configureFlyway(JSONObject config) {
+        Flyway flyway = null;
+        try {
+            flyway = Flyway.configure().dataSource(
+                config.getString("url"),
+                config.getString("username"),
+                config.getString("password")
+            ).load();
+
+            int migrations = flyway.migrate();
+
+            flyway.validate();
+        } catch (FlywayException err) {
+            logger.fatal("Migrations and validation failed. This could cause extreme problems if not addressed.", err);
+            if(flyway != null) {
+                logger.warn("Flyway repair beginning. It's still advised you check the database's health manually.");
+                flyway.repair();
+            }
+            System.exit(1);
+        }
+
+        return flyway;
     }
 
     /**

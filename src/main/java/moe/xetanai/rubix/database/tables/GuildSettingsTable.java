@@ -46,8 +46,8 @@ public class GuildSettingsTable extends Table {
             throw new SQLException("Failed to get a connection from pool");
         }
 
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM \"Guilds\" WHERE discordid=?");
-        ps.setLong(1, id);
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM \"guilds\" WHERE discordid=?");
+        ps.setString(1, ""+ id); // No unsigned bigint support in postgres. Sigh.
 
         ResultSet rs = ps.executeQuery();
 
