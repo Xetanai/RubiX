@@ -12,6 +12,6 @@ public class ThrowError extends Command {
 
     @Override
     public void run (CommandContext ctx) throws CommandException {
-        throw new CommandException(ctx.getEvent().getMessage().getContentRaw());
+        throw new CommandException("Threw an error as requested!");
     }
 }

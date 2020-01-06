@@ -16,7 +16,6 @@ import java.sql.SQLException;
  * Represents the basic guild settings SQL table
  */
 public class GuildSettingsTable extends Table {
-
     private Column<Long> DISCORD_ID = new Column<>("discordid", -1L);
     private Column<String> PREFIX = new Column<>("prefix", null);
 
@@ -71,19 +70,29 @@ public class GuildSettingsTable extends Table {
      * Represents a particular guild's basic settings
      */
     public class GuildSettings {
+        private boolean isDefault = false;
 
         private final long id;
         private final String prefix;
 
         GuildSettings () {
+            this.isDefault = true;
             this.id = GuildSettingsTable.this.DISCORD_ID.getDefaultValue();
             this.prefix = GuildSettingsTable.this.PREFIX.getDefaultValue();
         }
 
         private GuildSettings (@Nonnull ResultSet rs) {
+            this.isDefault = false;
             this.id = GuildSettingsTable.this.DISCORD_ID.getLong(rs);
             this.prefix = GuildSettingsTable.this.PREFIX.getString(rs);
         }
+
+        /**
+         * Will return true if, for any reason, explicit settings could not be obtained
+         * and defaults are being used implicitly.
+         * @return true if the object is the default, false otherwise
+         */
+        public boolean isDefault() {return this.isDefault;}
 
         /**
          * Gets the ID of the guild these settings are for

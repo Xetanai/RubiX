@@ -36,11 +36,12 @@ public class CommandModule extends ListenerAdapter {
         // Non negotiable, this ignores bots
         if (event.getAuthor().isBot()) {return;}
 
-        CommandContext ctx = CommandContext.generateContext(event);
-        GuildSettingsTable.GuildSettings gs = ctx.getGuildSettings();
+        CommandContext ctx = new CommandContext(event);
+        GuildSettingsTable.GuildSettings gs = ctx.getEffectiveGuildSettings();
 
         try {
-            if (!ctx.isValid()) {
+            if (!ctx.shouldAcknowledge()) {
+                // TODO: If default is used, check user settings to see if they want to be PMed instead.
                 // Likely not a command
                 return;
             }
