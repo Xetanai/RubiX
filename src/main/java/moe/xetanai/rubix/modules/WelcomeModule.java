@@ -1,6 +1,8 @@
 package moe.xetanai.rubix.modules;
 // TODO: Refactor this
 
+import moe.xetanai.rubix.entities.ManagedEvent;
+import moe.xetanai.rubix.entities.Module;
 import moe.xetanai.rubix.utils.ImageUtils;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
@@ -17,7 +19,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
-public class WelcomeModule extends ListenerAdapter {
+public class WelcomeModule extends Module {
 
     private static final Logger logger = LogManager.getLogger(WelcomeModule.class.getName());
 
@@ -41,8 +43,11 @@ public class WelcomeModule extends ListenerAdapter {
     public WelcomeModule () {}
 
     @Override
-    public void onGuildMemberJoin (@Nonnull GuildMemberJoinEvent event) {
+    public void onGuildMemberJoin (@Nonnull ManagedEvent<GuildMemberJoinEvent> mevent) {
         // TODO: Check if the guild has enabled welcoming
+
+        GuildMemberJoinEvent event = mevent.getEvent();
+
         // This module ignores bots.
         if (event.getUser().isBot()) {return;}
 

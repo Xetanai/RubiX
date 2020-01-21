@@ -4,6 +4,8 @@ import humanize.Humanize;
 import moe.xetanai.rubix.database.tables.GuildSettingsTable;
 import moe.xetanai.rubix.entities.Command;
 import moe.xetanai.rubix.entities.CommandContext;
+import moe.xetanai.rubix.entities.ManagedEvent;
+import moe.xetanai.rubix.entities.Module;
 import moe.xetanai.rubix.entities.commands.About;
 import moe.xetanai.rubix.entities.commands.ActivityPie;
 import moe.xetanai.rubix.entities.commands.ThrowError;
@@ -11,7 +13,6 @@ import moe.xetanai.rubix.utils.MiscUtils;
 import moe.xetanai.rubix.utils.RatelimitUtils;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +22,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandModule extends ListenerAdapter {
+public class CommandModule extends Module {
 
     private static final Logger logger = LogManager.getLogger(CommandModule.class.getName());
     private static List<Command> COMMANDS = new ArrayList<>();
@@ -31,8 +32,11 @@ public class CommandModule extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageReceived (@Nonnull MessageReceivedEvent event) {
+    public void onMessageReceived (@Nonnull ManagedEvent<MessageReceivedEvent> mevent) {
         logger.traceEntry();
+
+        MessageReceivedEvent event = mevent.getEvent();
+
         // Non negotiable, this ignores bots
         if (event.getAuthor().isBot()) {return;}
 
