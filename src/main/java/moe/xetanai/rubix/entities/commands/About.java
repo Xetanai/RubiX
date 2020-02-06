@@ -32,7 +32,7 @@ public class About extends Command {
         Random rand = new Random();
         Color randColor = RANDOM_COLORS[rand.nextInt(RANDOM_COLORS.length - 1)];
 
-        EmbedBuilder e = new EmbedBuilder().setTitle(String.format("RubiX (%s) v%s", RubixInfo.RELEASE_NAME, RubixInfo.VERSION)).setDescription("RubiX is an open source bot made in Java, provided free of charge.\n" + "It's made to be as customizeable as possible, valuing user and admin control above a lengthy command list.\n" + "If you have any suggestions, complaints, or compliments, please use the `feedback` command!").setThumbnail(BotMetaUtils.getBotUser().getEffectiveAvatarUrl()).setColor(randColor).addField("Developer", BotMetaUtils.getOwners()[0].getAsTag(), true) // TODO: Make this a list.
+        EmbedBuilder e = new EmbedBuilder().setTitle(String.format("RubiX (%s) v%s", RubixInfo.RELEASE_NAME, RubixInfo.VERSION)).setDescription("RubiX is an open source bot made in Java.\n" + "RubiX's goal is to make your server's data easier to visualize with a number of graphs and stats at your disposal.\n" + "If you have any suggestions, complaints, or compliments, please use the `feedback` command!").setThumbnail(BotMetaUtils.getBotUser().getEffectiveAvatarUrl()).setColor(randColor).addField("Developer", BotMetaUtils.getOwners()[0].getAsTag(), true) // TODO: Make this a list.
             .addField("Important links", RubixInfo.LINK_FIELD_TEXT, false);
 
         ctx.reply(new MessageBuilder(e).build(), true);

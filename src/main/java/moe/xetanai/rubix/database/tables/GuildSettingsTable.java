@@ -75,6 +75,7 @@ public class GuildSettingsTable extends Table {
         private final long id;
         private final String prefix;
 
+
         GuildSettings () {
             this.isDefault = true;
             this.id = GuildSettingsTable.this.DISCORD_ID.getDefaultValue();

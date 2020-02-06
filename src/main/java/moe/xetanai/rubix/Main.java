@@ -1,7 +1,6 @@
 package moe.xetanai.rubix;
 
 import moe.xetanai.rubix.database.Database;
-import moe.xetanai.rubix.entities.ManagedListenerAdapter;
 import moe.xetanai.rubix.modules.CommandModule;
 import moe.xetanai.rubix.modules.WelcomeModule;
 import moe.xetanai.rubix.utils.BotMetaUtils;
@@ -50,7 +49,8 @@ public class Main {
             JDABuilder apibuilder = new JDABuilder(AccountType.BOT)
                 .setToken(botCfg.getString("token"))
                 .setAudioEnabled(false)
-                .addEventListener(new ManagedListenerAdapter());
+                .addEventListener(new CommandModule())
+                .addEventListener(new WelcomeModule());
             api = apibuilder.build();
         } catch (IOException | JSONException err) {
             logger.fatal("Failed to load and parse configuration", err);
