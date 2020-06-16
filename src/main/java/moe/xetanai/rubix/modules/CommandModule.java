@@ -24,7 +24,7 @@ import java.util.List;
 public class CommandModule extends ListenerAdapter {
 
     private static final Logger logger = LogManager.getLogger(CommandModule.class.getName());
-    private static List<Command> COMMANDS = new ArrayList<>();
+    private static final List<Command> COMMANDS = new ArrayList<>();
 
     public CommandModule () {
         registerCommands();
